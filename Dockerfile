@@ -4,7 +4,7 @@ RUN apt-get update
 RUN apt-get -y install python3 python3-pip vim iputils-ping
 
 ADD templates/. /opt/templates
-#ADD uploads   /opt/uploads
+ADD uploads   /opt/uploads
 COPY requirements.txt .
 RUN pip install -r requirements.txt --break-system-packages
 WORKDIR /opt

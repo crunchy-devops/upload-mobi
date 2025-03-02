@@ -29,9 +29,9 @@ dictConfig({
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
+#login_manager = LoginManager()
+#login_manager.init_app(app)
+#login_manager.login_view = 'login'
 
 # Configuration des paramètres d'upload
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -48,9 +48,6 @@ class User(UserMixin):
     def __init__(self, id):
         self.id = id
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User(user_id) if user_id in users else None
 
 # Route pour l'upload de fichiers
 @app.route('/upload', methods=['POST'])
@@ -69,39 +66,9 @@ def upload_file():
         return redirect(url_for('main'))
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        # Log the username and password (for debugging purposes only)
-        app.logger.debug(f"Attempting to log in with Username: {username}, Password: {password}")
-        user_name = username.strip()
-        passwd = password.strip()
-        app.logger.debug(f"list of Username: {users}")
-        try:
-            t = check_password_hash(users[user_name], passwd)
-        except KeyError:
-            app.logger.warning(f"Failed login attempt for Username: {user_name}")
-            flash('Invalid username or password')
-            return render_template('login.html')
-        app.logger.debug(f"hash {t}")
-        # Check if user exists and password is correct
-        if user_name in users and check_password_hash(users[user_name], passwd):
-            user = User(user_name)
-            login_user(user)
-            app.logger.info(f"User {user_name} logged in successfully.")
-            return redirect(url_for('main'))  # Redirect to main screen on success
-        else:
-            app.logger.warning(f"Failed login attempt for Username: {user_name}")
-            flash('Invalid username or password')
-
-    return render_template('login.html')
 
 @app.route('/')
 @app.route('/main')
-@login_required
 def main():
     # Liste des fichiers dans le dossier d'uploads
     files = os.listdir(app.config['UPLOAD_FOLDER'])
@@ -109,12 +76,6 @@ def main():
     return render_template('main.html', files=files)
     #return render_template('main.html', username=current_user.id)
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    app.logger.info(f"User {current_user.id} logged out.")
-    return redirect(url_for('login'))
 
 # Route pour télécharger les fichiers
 @app.route('/download/<filename>')
