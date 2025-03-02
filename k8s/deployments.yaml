@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uploads-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uploads
+  template:
+    metadata:
+      labels:
+        app: uploads
+    spec:
+      containers:
+        - name: uploads-container
+          image: systemdevformations/upload-mobi  # Replace with your application image if necessary
+          volumeMounts:
+            - mountPath: /opt/uploads  # Path inside the container
+              name: uploads-storage       # Volume name defined below
+      volumes:
+        - name: uploads-storage
+          persistentVolumeClaim:
+            claimName: uploads-pvc       # Reference to PVC created above

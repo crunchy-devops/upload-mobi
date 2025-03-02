@@ -1,0 +1,11 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-storage
+provisioner: nfs.csi.k8s.io
+parameters:
+  server: 172.16.0.16
+  share: /mnt/nfs_share
+  subDir: "up"
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

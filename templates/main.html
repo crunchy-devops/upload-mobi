@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOBI File Uploader</title>
+</head>
+<body>
+    <h1>Uploaded MOBI Files</h1>
+    <ul>
+        {% for file in files %}
+            <li>
+                {{ file }}
+                <br>
+                <br>
+                <a href="{{ url_for('download_file', filename=file) }}">Download</a>
+                <br>
+                <br>
+            </li>
+        {% endfor %}
+    </ul>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".mobi" required>
+        <input type="submit" value="Upload">
+    </form>
+</body>
+</html>
